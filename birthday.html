@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Anuoluwapo 🤍</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #fdf6ee; --blush: #f2c4b0; --rose: #c97b6a;
+    --deep: #3b2a2a; --gold: #c9a96e; --soft: #f9ede4;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--cream); color:var(--deep); font-family:'Lato',sans-serif; font-weight:300; overflow-x:hidden; }
+
+  /* PETALS */
+  .petal { position:fixed; pointer-events:none; opacity:0; animation:fall linear infinite; z-index:0; }
+  @keyframes fall { 0%{transform:translateY(-50px) rotate(0deg);opacity:0.7} 100%{transform:translateY(110vh) rotate(360deg);opacity:0} }
+
+  /* TAP OVERLAY */
+  #tap-overlay {
+    position:fixed; inset:0; z-index:999; display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    background:linear-gradient(160deg,#3b2a2a 0%,#5a3030 100%);
+    cursor:pointer; transition:opacity 0.8s ease;
+  }
+  #tap-overlay.fade-out { opacity:0; pointer-events:none; }
+  .tap-heart { font-size:4rem; animation:heartbeat 1.4s ease infinite; }
+  .tap-text { margin-top:1.5rem; font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-style:italic; color:#f2c4b0; }
+  .tap-sub { margin-top:0.6rem; font-size:0.68rem; letter-spacing:0.3em; text-transform:uppercase; color:#c9a96e; opacity:0.8; animation:pulse 2s ease infinite; }
+  .tap-ripple { position:absolute; width:200px; height:200px; border-radius:50%; border:1px solid rgba(242,196,176,0.3); animation:ripple 2.5s ease infinite; }
+  .tap-ripple:nth-child(2){animation-delay:0.8s} .tap-ripple:nth-child(3){animation-delay:1.6s}
+  @keyframes ripple { 0%{transform:scale(0.5);opacity:0.6} 100%{transform:scale(2.5);opacity:0} }
+  @keyframes heartbeat { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+  @keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes blink { 0%,100%{opacity:0.3} 50%{opacity:1} }
+  @keyframes cardIn { to{opacity:1;transform:translateY(0)} }
+
+  /* MUSIC BAR */
+  #music-bar {
+    position:fixed; top:1rem; right:1rem; z-index:100;
+    background:rgba(255,255,255,0.85); backdrop-filter:blur(10px);
+    border:1px solid rgba(201,123,106,0.2); border-radius:50px;
+    padding:0.5rem 1rem; display:flex; align-items:center; gap:0.6rem;
+    font-size:0.72rem; color:var(--rose); box-shadow:0 4px 20px rgba(0,0,0,0.06);
+  }
+  #music-bar button {
+    background:var(--rose); border:none; color:white; border-radius:50%;
+    width:28px; height:28px; cursor:pointer; font-size:0.8rem;
+    display:flex; align-items:center; justify-content:center; transition:transform 0.2s;
+  }
+  #music-bar button:hover{transform:scale(1.1)}
+  .music-dot { width:6px; height:6px; border-radius:50%; background:var(--rose); animation:blink 1.5s ease infinite; }
+
+  /* INTRO */
+  #intro {
+    min-height:100vh; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center;
+    padding:2rem; position:relative;
+    background:linear-gradient(160deg,#fdf6ee 0%,#f9e8dc 60%,#f2d4c4 100%);
+  }
+  .intro-tag { font-size:0.7rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--rose); margin-bottom:1.5rem; opacity:0; animation:fadeUp 1s ease 0.3s forwards; }
+  .intro-title { font-family:'Cormorant Garamond',serif; font-size:clamp(3rem,10vw,6rem); font-weight:300; line-height:1.1; color:var(--deep); opacity:0; animation:fadeUp 1s ease 0.6s forwards; }
+  .intro-title span { font-style:italic; color:var(--rose); }
+  .intro-sub { margin-top:1.5rem; font-size:1rem; color:#8a6a6a; max-width:380px; line-height:1.8; opacity:0; animation:fadeUp 1s ease 0.9s forwards; }
+  .intro-from { margin-top:2rem; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.3rem; color:var(--gold); opacity:0; animation:fadeUp 1s ease 1.2s forwards; }
+  .scroll-hint { position:absolute; bottom:2rem; display:flex; flex-direction:column; align-items:center; gap:0.4rem; opacity:0; animation:fadeUp 1s ease 1.8s forwards; color:#b08080; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; }
+  .scroll-hint::after { content:''; width:1px; height:40px; background:linear-gradient(to bottom,var(--rose),transparent); animation:pulse 2s ease infinite; }
+
+  /* LETTER */
+  #letter { background:var(--soft); padding:5rem 2rem; display:flex; justify-content:center; }
+  .letter-card { max-width:600px; background:white; padding:3rem 2.5rem; border-radius:2px; box-shadow:0 2px 40px rgba(0,0,0,0.06); border-top:3px solid var(--gold); position:relative; }
+  .letter-card::before { content:'❝'; font-size:5rem; color:var(--blush); position:absolute; top:-1rem; left:1.5rem; font-family:'Cormorant Garamond',serif; line-height:1; }
+  .letter-card p { font-family:'Cormorant Garamond',serif; font-size:1.2rem; line-height:2; color:#5a3a3a; font-style:italic; }
+  .letter-sig { margin-top:2rem; text-align:right; font-family:'Cormorant Garamond',serif; font-size:1.4rem; color:var(--rose); }
+
+  /* SECTION HEADER */
+  .section-header { text-align:center; padding:4rem 2rem 2rem; background:var(--cream); }
+  .section-header h2 { font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,6vw,3.5rem); font-weight:300; color:var(--deep); }
+  .section-header h2 span { font-style:italic; color:var(--rose); }
+  .section-header p { margin-top:0.8rem; font-size:0.85rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); }
+
+  /* MEMORY CARDS */
+  #memories { padding:2rem 1.5rem 5rem; background:var(--cream); display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.5rem; max-width:1000px; margin:0 auto; }
+  .memory-card { background:white; border-radius:4px; overflow:hidden; box-shadow:0 2px 20px rgba(0,0,0,0.05); transition:transform 0.3s ease,box-shadow 0.3s ease; opacity:0; transform:translateY(30px); }
+  .memory-card.visible { animation:cardIn 0.6s ease forwards; }
+  .memory-card:hover { transform:translateY(-4px); box-shadow:0 8px 30px rgba(201,123,106,0.15); }
+
+  /* MEMORY PHOTO — path-based, no upload */
+  .memory-photo {
+    width:100%; height:220px;
+    background:linear-gradient(135deg,#f9e8dc,#f2d4c4);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    position:relative; overflow:hidden;
+  }
+  .memory-photo img {
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover; object-position:center;
+    z-index:1; display:block;
+  }
+  .memory-photo video {
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover; object-position:center;
+    z-index:1; display:block;
+    background:#000;
+  }
+  .photo-placeholder {
+    display:flex; flex-direction:column; align-items:center; gap:0.5rem;
+    color:var(--rose); z-index:0; pointer-events:none;
+    position:relative;
+  }
+  .photo-placeholder span { font-size:2rem; }
+  .photo-placeholder p { font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--rose); opacity:0.7; }
+
+  .memory-body { padding:1.5rem; }
+  .memory-number { font-size:0.65rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--gold); margin-bottom:0.4rem; }
+  .memory-title { font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:400; color:var(--deep); margin-bottom:0.6rem; }
+  .memory-desc { font-size:0.88rem; line-height:1.8; color:#7a5a5a; }
+  .memory-emoji { margin-top:1rem; font-size:1.2rem; }
+
+  /* FUN FACTS */
+  #fun-facts { background:#f9ede4; padding-bottom:4rem; }
+  .facts-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1.2rem; max-width:900px; margin:2rem auto 0; padding:0 1.5rem; }
+  .fact-card { background:white; border-radius:6px; padding:1.8rem 1.5rem; box-shadow:0 2px 20px rgba(0,0,0,0.05); border-bottom:3px solid var(--gold); text-align:center; }
+  .fact-icon { font-size:2.2rem; margin-bottom:0.8rem; }
+  .fact-title { font-family:'Cormorant Garamond',serif; font-size:1.3rem; color:var(--deep); margin-bottom:0.6rem; }
+  .fact-desc { font-size:0.85rem; line-height:1.8; color:#7a5a5a; }
+
+  /* GAMES SECTION */
+  #games-section { background:linear-gradient(160deg,#1a0a0a 0%,#2d1515 100%); padding:5rem 1.5rem; text-align:center; position:relative; z-index:1; }
+  .games-intro-title { font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,7vw,3.5rem); color:var(--gold); font-weight:300; margin-bottom:0.5rem; }
+  .games-intro-sub { color:#c9a0a0; font-size:0.9rem; letter-spacing:0.1em; margin-bottom:3rem; }
+
+  /* QUIZ */
+  #wwtbam { max-width:680px; margin:0 auto; background:rgba(255,255,255,0.04); border:1px solid rgba(201,169,110,0.2); border-radius:8px; padding:2rem 1.5rem; display:none; }
+  #wwtbam.active { display:block; }
+  .millionaire-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:0.5rem; }
+  .q-number { font-size:0.7rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); }
+  .prize-display { font-family:'Cormorant Garamond',serif; font-size:1.6rem; color:#fff; }
+  .prize-display span { color:var(--gold); }
+  .question-box { background:rgba(201,169,110,0.08); border:1px solid rgba(201,169,110,0.3); border-radius:6px; padding:1.5rem; margin-bottom:1.5rem; }
+  .question-text { font-family:'Cormorant Garamond',serif; font-size:clamp(1.1rem,4vw,1.4rem); color:#fff; line-height:1.6; }
+  .options-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:1.5rem; }
+  .option-btn { background:rgba(255,255,255,0.05); border:1px solid rgba(201,169,110,0.3); border-radius:6px; padding:0.9rem 0.8rem; color:#f2e0d0; font-size:0.88rem; cursor:pointer; transition:all 0.2s; text-align:left; font-family:'Lato',sans-serif; }
+  .option-btn:hover:not(:disabled) { background:rgba(201,169,110,0.15); border-color:var(--gold); transform:translateY(-2px); }
+  .option-btn .opt-label { color:var(--gold); font-weight:700; margin-right:0.5rem; }
+  .option-btn.correct { background:rgba(100,200,100,0.2); border-color:#6dc46d; color:#aeffae; }
+  .option-btn.wrong { background:rgba(200,60,60,0.2); border-color:#c44; color:#ffaaaa; }
+  .option-btn.reveal { background:rgba(201,169,110,0.3); border-color:var(--gold); }
+  .option-btn:disabled { cursor:default; }
+  .lifelines { display:flex; gap:0.8rem; justify-content:center; margin-bottom:1.5rem; flex-wrap:wrap; }
+  .lifeline-btn { background:rgba(201,169,110,0.1); border:1px solid rgba(201,169,110,0.4); color:var(--gold); border-radius:50px; padding:0.4rem 1rem; font-size:0.75rem; cursor:pointer; letter-spacing:0.05em; transition:all 0.2s; }
+  .lifeline-btn:hover:not(:disabled) { background:rgba(201,169,110,0.25); }
+  .lifeline-btn:disabled { opacity:0.3; cursor:default; text-decoration:line-through; }
+  .prize-ladder { display:flex; flex-direction:column-reverse; gap:3px; margin-top:1.5rem; }
+  .ladder-row { display:flex; justify-content:space-between; align-items:center; padding:0.3rem 0.8rem; border-radius:4px; font-size:0.78rem; color:#a08080; transition:all 0.3s; }
+  .ladder-row.current { background:rgba(201,169,110,0.2); color:var(--gold); font-weight:700; }
+  .ladder-row.completed { color:#6dc46d; }
+  .wwtbam-result { display:none; padding:2rem; text-align:center; }
+  .wwtbam-result.show { display:block; }
+  .result-emoji { font-size:3rem; margin-bottom:1rem; }
+  .result-title { font-family:'Cormorant Garamond',serif; font-size:2rem; color:var(--gold); margin-bottom:0.5rem; }
+  .result-msg { color:#c9a0a0; line-height:1.8; margin-bottom:1.5rem; }
+  .result-winnings { font-family:'Cormorant Garamond',serif; font-size:2.5rem; color:#6dc46d; margin-bottom:1.5rem; }
+
+  /* MEMORY MATCH */
+  #memory-match { display:none; max-width:520px; margin:3rem auto 0; text-align:center; }
+  .match-title { font-family:'Cormorant Garamond',serif; font-size:1.8rem; color:var(--gold); margin-bottom:0.3rem; }
+  .match-sub { color:#c9a0a0; font-size:0.85rem; margin-bottom:1.5rem; }
+  .match-stats { display:flex; justify-content:center; gap:2rem; margin-bottom:1.2rem; font-size:0.8rem; color:#c9a0a0; letter-spacing:0.1em; }
+  .match-stats span { color:var(--gold); font-size:1.1rem; font-weight:700; }
+  .match-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0.6rem; margin-bottom:1.5rem; }
+  .match-card { aspect-ratio:1; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; background:rgba(201,169,110,0.1); border:1px solid rgba(201,169,110,0.3); transition:transform 0.15s; user-select:none; position:relative; overflow:hidden; }
+  .match-card .card-back { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:1.4rem; transition:opacity 0.3s; }
+  .match-card .card-front { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:1.6rem; opacity:0; transition:opacity 0.3s; }
+  .match-card.flipped .card-back { opacity:0; }
+  .match-card.flipped .card-front { opacity:1; }
+  .match-card.matched { background:rgba(100,200,100,0.15); border-color:#6dc46d; pointer-events:none; }
+  .match-card:hover:not(.matched) { transform:scale(1.05); }
+  .match-complete { display:none; padding:1.5rem; background:rgba(201,169,110,0.1); border:1px solid rgba(201,169,110,0.3); border-radius:8px; margin-top:1rem; }
+  .match-complete.show { display:block; }
+  .match-complete p { color:#c9a0a0; line-height:1.8; }
+  .match-complete strong { color:var(--gold); font-size:1.2rem; display:block; margin-bottom:0.5rem; font-family:'Cormorant Garamond',serif; }
+
+  /* WHEEL */
+  #wheel-section { display:none; max-width:500px; margin:3rem auto 0; text-align:center; }
+  .wheel-title { font-family:'Cormorant Garamond',serif; font-size:2rem; color:var(--gold); margin-bottom:0.5rem; }
+  .wheel-sub { color:#c9a0a0; font-size:0.85rem; margin-bottom:1.5rem; }
+  .wheel-pointer { font-size:2.5rem; line-height:1; }
+  #wheelCanvas { border-radius:50%; box-shadow:0 0 40px rgba(201,169,110,0.3); max-width:100%; display:block; margin:0 auto; }
+  #spinBtn { margin-top:1.5rem; background:linear-gradient(135deg,var(--gold),var(--rose)); border:none; color:white; padding:1rem 3rem; border-radius:50px; font-size:1rem; letter-spacing:0.1em; cursor:pointer; font-family:'Lato',sans-serif; box-shadow:0 4px 20px rgba(201,169,110,0.4); transition:transform 0.2s; }
+  #spinBtn:hover:not(:disabled) { transform:scale(1.05); }
+  #spinBtn:disabled { opacity:0.5; cursor:default; }
+  .wheel-prize-reveal { display:none; margin-top:2rem; padding:2rem; background:rgba(201,169,110,0.1); border:1px solid rgba(201,169,110,0.3); border-radius:8px; }
+  .wheel-prize-reveal.show { display:block; }
+  .wheel-prize-emoji { font-size:3rem; margin-bottom:0.8rem; }
+  .wheel-prize-name { font-family:'Cormorant Garamond',serif; font-size:2rem; color:var(--gold); margin-bottom:0.5rem; }
+  .wheel-prize-msg { color:#c9a0a0; line-height:1.8; }
+
+  /* SHARED BUTTON */
+  .start-game-btn { background:linear-gradient(135deg,var(--gold),var(--rose)); border:none; color:white; padding:1.2rem 3rem; border-radius:50px; font-size:1rem; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; font-family:'Lato',sans-serif; box-shadow:0 4px 30px rgba(201,169,110,0.4); transition:transform 0.2s; margin-top:1rem; display:inline-block; }
+  .start-game-btn:hover { transform:scale(1.05); }
+
+  /* CLOSING */
+  #closing { background:linear-gradient(160deg,#3b2a2a 0%,#5a3030 100%); padding:6rem 2rem; text-align:center; color:white; position:relative; z-index:1; }
+  #closing h2 { font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,6vw,4rem); font-weight:300; line-height:1.3; }
+  #closing h2 span { color:var(--blush); font-style:italic; }
+  #closing p { margin-top:1.5rem; font-size:0.95rem; line-height:2; color:#c9a0a0; max-width:480px; margin-left:auto; margin-right:auto; }
+  .closing-hearts { margin-top:2rem; font-size:1.5rem; letter-spacing:0.5rem; animation:heartbeat 1.5s ease infinite; }
+  .closing-sig { margin-top:3rem; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.8rem; color:var(--gold); }
+
+  /* TOAST */
+  .feedback-toast { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(100px); background:#1a0a0a; border:1px solid var(--gold); color:var(--gold); padding:0.8rem 1.5rem; border-radius:50px; font-size:0.85rem; z-index:500; transition:transform 0.4s ease; white-space:nowrap; max-width:90vw; text-align:center; }
+  .feedback-toast.show { transform:translateX(-50%) translateY(0); }
+
+  @media(max-width:500px) {
+    .letter-card{padding:2rem 1.5rem}
+    #memories{grid-template-columns:1fr}
+    .options-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- TAP OVERLAY -->
+<div id="tap-overlay" onclick="beginExperience()">
+  <div class="tap-ripple"></div>
+  <div class="tap-ripple"></div>
+  <div class="tap-ripple"></div>
+  <div class="tap-heart">🌹</div>
+  <div class="tap-text">For Anuoluwapo</div>
+  <div class="tap-sub">tap anywhere to begin</div>
+</div>
+
+<div id="petals"></div>
+
+<div id="music-bar">
+  <div class="music-dot" id="music-dot" style="display:none"></div>
+  <span>Beautiful Nubia – What a feeling</span>
+  <button onclick="toggleMusic()" id="play-btn">▶</button>
+</div>
+
+<!-- INTRO -->
+<section id="intro">
+  <p class="intro-tag">A little something made with love</p>
+  <h1 class="intro-title">For <span>Anuoluwapo</span></h1>
+  <p class="intro-sub">Every moment with you has been a gift I didn't know I needed. This is me trying to hold them all in one place.</p>
+  <p class="intro-from">— from your Sapient 🤍</p>
+  <div class="scroll-hint">scroll to remember</div>
+</section>
+
+<!-- LETTER -->
+<section id="letter">
+  <div class="letter-card">
+    <p>Anu, you walked into my life and somehow made the ordinary feel like poetry. From the first time I saw you to every quiet moment in between — you've been my favourite chapter. This isn't just a birthday gift. This is me saying <em>thank you</em> for every laugh, every argument we survived, every time you forced me to take a picture and every time you sat with me like nowhere else mattered. I see you. I choose you. Happy Birthday, my love. 🌹</p>
+    <div class="letter-sig">— Folusho (your Sapient)</div>
+  </div>
+</section>
+
+<!-- MEMORIES -->
+<div class="section-header">
+  <h2>Our <span>Memories</span></h2>
+  <p>A few moments I never want to forget</p>
+</div>
+<div id="memories">
+
+  <!-- =============================================
+       HOW TO ADD PHOTOS / VIDEOS:
+       - Image:  <img src="photo.jpg" alt="...">
+       - Video:  <video src="clip.mp4" autoplay muted loop playsinline></video>
+       - Put files in the SAME FOLDER as this HTML file
+       - Use just the filename e.g. kiss.jpg not C:/Users/...
+       - If no media added, emoji placeholder shows instead
+       ============================================= -->
+
+  <div class="memory-card">
+    <div class="memory-photo">
+      <video src="k.mp4" autoplay muted loop playsinline></video>
+      <div class="photo-placeholder"><span>💋</span><p>Memory 01</p></div>
+    </div>
+    <div class="memory-body">
+      <div class="memory-number">Memory 01</div>
+      <div class="memory-title">Our First Kiss</div>
+      <div class="memory-desc">I don't think either of us planned it. But it happened, and the world got a little quieter after that. I still think about it.</div>
+      <div class="memory-emoji">💋</div>
+    </div>
+  </div>
+
+  <div class="memory-card">
+    <div class="memory-photo">
+      <video src="Movie night.mp4" autoplay muted loop playsinline></video>
+      <div class="photo-placeholder"><span>🎬</span><p>Memory 02</p></div>
+    </div>
+    <div class="memory-body">
+      <div class="memory-number">Memory 02</div>
+      <div class="memory-title">First Movie Night</div>
+      <div class="memory-desc">Remember our first movie night — we got there so early and still didn't end up watching the movie cause they started very late and I was crashing out, threw my ticket away first but gave yours to someone 😂</div>
+      <div class="memory-emoji">🍿🎬</div>
+    </div>
+  </div>
+
+  <div class="memory-card">
+    <div class="memory-photo">
+       <img src="smile.JPG" alt="First Time You Stayed Over"> 
+      <div class="photo-placeholder"><span>🌙</span><p>Memory 03</p></div>
+    </div>
+    <div class="memory-body">
+      <div class="memory-number">Memory 03</div>
+      <div class="memory-title">First Time You Stayed Over</div>
+      <div class="memory-desc">I don't think I had a picture of this but one thing I knew was that I couldn't sleep well that night — I was up at intervals making sure you were still breathing 😂</div>
+      <div class="memory-emoji">🌙✨</div>
+    </div>
+  </div>
+
+  <div class="memory-card">
+    <div class="memory-photo">
+      <video src="goof.mp4" autoplay muted loop playsinline></video>
+      <div class="photo-placeholder"><span>🍽️</span><p>Memory 04</p></div>
+    </div>
+    <div class="memory-body">
+      <div class="memory-number">Memory 04</div>
+      <div class="memory-title">Sleep overs</div>
+      <div class="memory-desc">Sleep overs are always the best with you my darling just like you being born to the world is a perfect gift</div>
+      <div class="memory-emoji">🍷🕯️</div>
+    </div>
+  </div>
+
+  <div class="memory-card">
+    <div class="memory-photo">
+      <video src="goofy.mp4" autoplay muted loop playsinline></video>
+      <div class="photo-placeholder"><span>⛪</span><p>Memory 05</p></div>
+    </div>
+    <div class="memory-body">
+      <div class="memory-number">Memory 05</div>
+      <div class="memory-title">Random goofing</div>
+      <div class="memory-desc">Around you, my inner child just comes out. Being comfortable around people is something I struggle with — but with you, I don't even try too much. Happy birthday my Love. 🤍</div>
+      <div class="memory-emoji">🙏🤍</div>
+    </div>
+  </div>
+
+  <div class="memory-card">
+    <div class="memory-photo">
+       <img src="forcepics.JPEG" alt="When You Force Me to Pose"> 
+      <div class="photo-placeholder"><span>📸</span><p>Memory 06</p></div>
+    </div>
+    <div class="memory-body">
+      <div class="memory-number">Memory 06</div>
+      <div class="memory-title">When You Force Me to Pose</div>
+      <div class="memory-desc">"Stand here. No, turn. Smile properly." You and your camera. I act like I hate it. I secretly love every single photo you've taken of me.</div>
+      <div class="memory-emoji">😒📸😂</div>
+    </div>
+  </div>
+
+  <div class="memory-card">
+    <div class="memory-photo">
+      <img src="plait.jpg" alt="You Plaited My Hair"> 
+      <div class="photo-placeholder"><span>💆‍♂️</span><p>Memory 07</p></div>
+    </div>
+    <div class="memory-body">
+      <div class="memory-number">Memory 07</div>
+      <div class="memory-title">You Plaited My Hair</div>
+      <div class="memory-desc">Your hands in my hair, both of us just talking about everything and nothing. That kind of comfort is rare. I felt so taken care of.</div>
+      <div class="memory-emoji">🪮💛</div>
+    </div>
+  </div>
+
+  <div class="memory-card">
+    <div class="memory-photo">
+      <video src="g.mp4" autoplay muted loop playsinline></video>
+      <div class="photo-placeholder"><span>👨‍🍳</span><p>Memory 08</p></div>
+    </div>
+    <div class="memory-body">
+      <div class="memory-number">Memory 08</div>
+      <div class="memory-title">Time with you </div>
+      <div class="memory-desc">You are my favourite person, time with you is endless as i am helplessly inlove with you  </div>
+      <div class="memory-emoji">👨‍🍳🎂❤️</div>
+    </div>
+  </div>
+
+  <div class="memory-card">
+    <div class="memory-photo">
+      <img src="IMG_3370.JPEG" alt="First Time You Stayed Over">
+      <div class="photo-placeholder"><span>👨‍🍳</span><p>Memory 09</p></div>
+    </div>
+    <div class="memory-body">
+      <div class="memory-number">Memory 08</div>
+      <div class="memory-title"> Picture perfect </div>
+      <div class="memory-desc">I may not tell you how much i love you everyday but i will spend the rest of my life showing you how much you mean to me.</div>
+      <div class="memory-emoji">👨‍🍳🎂❤️</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FUN FACTS -->
+<section id="fun-facts">
+  <div class="section-header" style="background:#f9ede4;">
+    <h2>Did You Know? <span>About Anu</span></h2>
+    <p>A few things that make her extra special</p>
+  </div>
+  <div class="facts-grid">
+    <div class="fact-card">
+      <div class="fact-icon">👑</div>
+      <div class="fact-title">Only Daughter</div>
+      <div class="fact-desc">She is the only daughter in her family — raised to be royalty, and she shows up that way every single day.</div>
+    </div>
+    <div class="fact-card">
+      <div class="fact-icon">⭐</div>
+      <div class="fact-title">Born Early</div>
+      <div class="fact-desc">She came into the world earlier than expected — as if she couldn't wait to start making it a better place. That spirit never left her.</div>
+    </div>
+    <div class="fact-card">
+      <div class="fact-icon">🔬</div>
+      <div class="fact-title">Microbiology, FUNAAB</div>
+      <div class="fact-desc">Studying Microbiology at FUNAAB — the girl who talks about health and has the science to back it up. Future Dr. Anu, we see you. 🩺</div>
+    </div>
+    <div class="fact-card">
+      <div class="fact-icon">🎙️</div>
+      <div class="fact-title">Health Content Creator</div>
+      <div class="fact-desc">She doesn't just study health — she teaches it. Her health talks are making a real difference, one video at a time. The ring light was always coming. 💡</div>
+    </div>
+  </div>
+</section>
+
+<!-- GAMES -->
+<section id="games-section">
+  <div id="games-intro">
+    <p class="games-intro-title">🎮 But Wait...</p>
+    <p class="games-intro-sub">There's one more thing. Think you know your man? Prove it.</p>
+    <button class="start-game-btn" onclick="startGame()">🔥 Start the Challenge</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="wwtbam">
+    <div id="quiz-area">
+      <div class="millionaire-header">
+        <div class="q-number" id="q-number">Question 1 of 10</div>
+        <div class="prize-display">💰 <span id="current-prize">₦500</span></div>
+      </div>
+      <div class="lifelines">
+        <button class="lifeline-btn" id="ll-5050" onclick="useFiftyFifty()">🎯 50:50</button>
+        <button class="lifeline-btn" id="ll-phone" onclick="usePhoneSapient()">📞 Phone Sapient</button>
+        <button class="lifeline-btn" id="ll-heart" onclick="useAskHeart()">💝 Ask the Heart</button>
+      </div>
+      <div class="question-box">
+        <div class="question-text" id="question-text"></div>
+      </div>
+      <div class="options-grid" id="options-grid"></div>
+      <div class="prize-ladder" id="prize-ladder"></div>
+    </div>
+    <div class="wwtbam-result" id="quiz-result">
+      <div class="result-emoji" id="result-emoji">🎉</div>
+      <div class="result-title" id="result-title"></div>
+      <div class="result-msg" id="result-msg"></div>
+      <div class="result-winnings" id="result-winnings"></div>
+      <button class="start-game-btn" onclick="showMemoryMatch()">🃏 Play Memory Match!</button>
+    </div>
+  </div>
+
+  <!-- MEMORY MATCH -->
+  <div id="memory-match">
+    <p class="match-title">🃏 Memory Match</p>
+    <p class="match-sub">Flip the cards and match our memories. Go on, Anu!</p>
+    <div class="match-stats">
+      <div>Moves: <span id="move-count">0</span></div>
+      <div>Pairs: <span id="pair-count">0</span>/8</div>
+    </div>
+    <div class="match-grid" id="match-grid"></div>
+    <div class="match-complete" id="match-complete">
+      <strong>🎉 You matched them all!</strong>
+      <p>You remember everything — just like Folusho remembered every moment he spent with you. Now for the big finale...</p>
+      <button class="start-game-btn" style="margin-top:1rem;" onclick="showWheel()">🎡 Spin the Lucky Wheel!</button>
+    </div>
+  </div>
+
+  <!-- WHEEL -->
+  <div id="wheel-section">
+    <p class="wheel-title">🎡 The Lucky Wheel</p>
+    <p class="wheel-sub">One spin. One prize. It's all yours, Anu.</p>
+    <div class="wheel-pointer">▼</div>
+    <canvas id="wheelCanvas" width="340" height="340"></canvas>
+    <br>
+    <button id="spinBtn" onclick="spinWheel()">✨ SPIN!</button>
+    <div class="wheel-prize-reveal" id="wheel-result">
+      <div class="wheel-prize-emoji" id="w-prize-emoji"></div>
+      <div class="wheel-prize-name" id="w-prize-name"></div>
+      <div class="wheel-prize-msg" id="w-prize-msg"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section id="closing">
+  <h2>Here's to every memory<br>we <span>haven't made yet</span></h2>
+  <p>Happy Birthday Anuoluwapo. You deserve all the love in the world, and I'm going to spend a very long time trying to give it to you.</p>
+  <div class="closing-hearts">🤍 🌹 🤍</div>
+  <div class="closing-sig">Forever yours, Folusho</div>
+</section>
+
+<div class="feedback-toast" id="toast"></div>
+
+<script>
+// =============================================
+// MUSIC — replace the src below with your file
+// e.g. 'feeling.mp3' or full YouTube embed URL
+// =============================================
+const MUSIC_SRC = 'feeling.mp3';
+
+// PETALS
+const petalEmojis = ['🌸','🌹','✨','🌺','💮'];
+const petalContainer = document.getElementById('petals');
+for (let i = 0; i < 18; i++) {
+  const p = document.createElement('div');
+  p.className = 'petal';
+  p.textContent = petalEmojis[Math.floor(Math.random() * petalEmojis.length)];
+  p.style.left = Math.random() * 100 + 'vw';
+  p.style.animationDuration = (6 + Math.random() * 10) + 's';
+  p.style.animationDelay = (Math.random() * 10) + 's';
+  p.style.fontSize = (0.8 + Math.random()) + 'rem';
+  petalContainer.appendChild(p);
+}
+
+// SCROLL REVEAL
+const memCards = document.querySelectorAll('.memory-card');
+const cardObs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 100);
+      cardObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+memCards.forEach(c => cardObs.observe(c));
+
+// MUSIC
+let musicPlaying = false;
+let audioPlayer = null;
+
+function beginExperience() {
+  const o = document.getElementById('tap-overlay');
+  o.classList.add('fade-out');
+  setTimeout(() => o.remove(), 900);
+  startMusic();
+}
+
+function startMusic() {
+  if (audioPlayer) return;
+  audioPlayer = new Audio(MUSIC_SRC);
+  audioPlayer.loop = true;
+  audioPlayer.volume = 0.8;
+  audioPlayer.play().then(() => {
+    musicPlaying = true;
+    document.getElementById('play-btn').textContent = '⏸';
+    document.getElementById('music-dot').style.display = 'block';
+  }).catch(() => {
+    // Autoplay blocked — user can press play manually
+    musicPlaying = false;
+  });
+}
+
+function toggleMusic() {
+  if (!audioPlayer) { startMusic(); return; }
+  if (musicPlaying) {
+    audioPlayer.pause();
+    document.getElementById('play-btn').textContent = '▶';
+    document.getElementById('music-dot').style.display = 'none';
+    musicPlaying = false;
+  } else {
+    audioPlayer.play();
+    document.getElementById('play-btn').textContent = '⏸';
+    document.getElementById('music-dot').style.display = 'block';
+    musicPlaying = true;
+  }
+}
+
+// TOAST
+function showToast(msg, dur = 3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), dur);
+}
+
+// QUIZ
+const questions = [
+  { q:"What is Folusho's all-time favourite food?", correct:"Rice and Beans", wrong:["Jollof Rice","Eba and Soup","Fried Rice and Chicken"], hint:"It's a classic Nigerian combo — he eats it almost every day 😄" },
+  { q:"Which football club does Folusho support with his whole chest?", correct:"Arsenal", wrong:["Chelsea","Manchester United","Barcelona"], hint:"He suffers every season but will NEVER switch 😭⚽" },
+  { q:"On what date did Folusho officially ask you out?", correct:"October 8, 2023", wrong:["February 14, 2023","December 25, 2022","September 1, 2023"], hint:"Last quarter of 2023... think October 🍂" },
+  { q:"What ice cream flavour did Folusho buy you on your last birthday?", correct:"Strawberry", wrong:["Chocolate","Vanilla","Cookies & Cream"], hint:"It's pink. Just like your smile that day 🍓" },
+  { q:"What was our very first date?", correct:"Movie Night", wrong:["Dinner at a Restaurant","A walk on campus","Amala Date"], hint:"Popcorn may or may not have been involved 🍿" },
+  { q:"What movie were you supposed to watch on your first date night but never actually watched?", correct:"Mad Max: Fury Road", wrong:["Black Panther","Fast & Furious 7","Avengers: Endgame"], hint:"A high-speed action film — you planned it, life had other plans 🚗💥" },
+  { q:"How much did we spend together on our Amala date?", correct:"₦9,700", wrong:["₦5,000","₦12,500","₦7,200"], hint:"It was under ₦10,000 but not by much 😅" },
+  { q:"If Folusho had to choose between Rice & Beans or Bread & Beans — which one?", correct:"Rice and Beans", wrong:["Bread and Beans","He'd skip both","He'd eat eba instead"], hint:"Does this man ever change? 😄" },
+  { q:"Would Folusho choose Movies or Music if he had to pick one forever?", correct:"Movie", wrong:["Music","Both equally","Neither — he'd pick sleep"], hint:"Remember your first date? That's your clue 🎬" },
+  { q:"Who is Folusho's favourite music artist of all time?", correct:"Olamide", wrong:["Burna Boy","Wizkid","Davido"], hint:"YBNL. Street vibes. Nigerian to the core 🎤" }
+];
+
+const prizes = [500,1000,1500,2000,2500,3000,3500,4000,4500,5000];
+const safeHavens = [2, 4];
+let currentQ = 0, currentWinnings = 0, lockedWinnings = 0, answeredCorrectly = 0, answered = false;
+let lifelinesUsed = { fiftyFifty:false, phone:false, heart:false };
+
+function startGame() {
+  document.getElementById('games-intro').style.display = 'none';
+  document.getElementById('wwtbam').classList.add('active');
+  buildLadder();
+  loadQuestion();
+}
+
+function buildLadder() {
+  const ladder = document.getElementById('prize-ladder');
+  ladder.innerHTML = '';
+  questions.forEach((_, i) => {
+    const row = document.createElement('div');
+    row.className = 'ladder-row' + (i === 0 ? ' current' : '');
+    row.id = 'ladder-' + i;
+    row.innerHTML = `<span>${safeHavens.includes(i) ? '🔒 ' : ''}Q${i+1}</span><span>₦${prizes[i].toLocaleString()}</span>`;
+    ladder.appendChild(row);
+  });
+}
+
+function updateLadder() {
+  questions.forEach((_, i) => {
+    const row = document.getElementById('ladder-' + i);
+    row.className = 'ladder-row';
+    if (i < currentQ) row.classList.add('completed');
+    if (i === currentQ) row.classList.add('current');
+  });
+}
+
+function loadQuestion() {
+  if (currentQ >= questions.length) { endQuiz(true); return; }
+  answered = false;
+  const q = questions[currentQ];
+  document.getElementById('q-number').textContent = `Question ${currentQ + 1} of 10`;
+  document.getElementById('current-prize').textContent = `₦${prizes[currentQ].toLocaleString()}`;
+  document.getElementById('question-text').textContent = q.q;
+  updateLadder();
+  const opts = [q.correct, ...q.wrong].sort(() => Math.random() - 0.5);
+  const labels = ['A','B','C','D'];
+  const grid = document.getElementById('options-grid');
+  grid.innerHTML = '';
+  opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="opt-label">${labels[i]}:</span>${opt}`;
+    btn.onclick = () => selectAnswer(btn, opt, q.correct);
+    grid.appendChild(btn);
+  });
+}
+
+function selectAnswer(btn, selected, correct) {
+  if (answered) return;
+  answered = true;
+  const all = document.querySelectorAll('.option-btn');
+  all.forEach(b => b.disabled = true);
+  btn.style.background = 'rgba(201,169,110,0.2)';
+  btn.style.borderColor = 'var(--gold)';
+  setTimeout(() => {
+    if (selected === correct) {
+      btn.classList.add('correct');
+      currentWinnings = prizes[currentQ];
+      if (safeHavens.includes(currentQ)) lockedWinnings = currentWinnings;
+      answeredCorrectly++;
+      showToast('✅ Correct! You know your man! 🔥');
+      currentQ++;
+      if (currentQ >= questions.length) { setTimeout(() => endQuiz(true), 1500); }
+      else { setTimeout(loadQuestion, 2000); }
+    } else {
+      btn.classList.add('wrong');
+      all.forEach(b => { if (b.textContent.replace(/^[A-D]:/,'').trim() === correct) b.classList.add('reveal'); });
+      showToast('❌ Oops! Wrong answer!', 2000);
+      setTimeout(() => endQuiz(false), 2500);
+    }
+  }, 1200);
+}
+
+function useFiftyFifty() {
+  if (lifelinesUsed.fiftyFifty || answered) return;
+  lifelinesUsed.fiftyFifty = true;
+  document.getElementById('ll-5050').disabled = true;
+  const correct = questions[currentQ].correct;
+  let removed = 0;
+  document.querySelectorAll('.option-btn').forEach(btn => {
+    if (btn.textContent.replace(/^[A-D]:/,'').trim() !== correct && removed < 2) {
+      btn.disabled = true; btn.style.opacity = '0.2'; removed++;
+    }
+  });
+  showToast('🎯 50:50 used! Two wrong answers removed.');
+}
+
+function usePhoneSapient() {
+  if (lifelinesUsed.phone || answered) return;
+  lifelinesUsed.phone = true;
+  document.getElementById('ll-phone').disabled = true;
+  const c = questions[currentQ].correct;
+  const hints = [
+    `📞 *rings* Hey babe! I think the answer starts with "${c[0]}"... don't tell him! 😂`,
+    `📞 Sapient here! Pretty sure it's "${c.substring(0,4)}..." — you've got this! 💪`,
+    `📞 Anu! The answer is something like "${c.split(' ')[0]}"! Love you, bye! 💕`
+  ];
+  showToast(hints[Math.floor(Math.random() * hints.length)], 5000);
+}
+
+function useAskHeart() {
+  if (lifelinesUsed.heart || answered) return;
+  lifelinesUsed.heart = true;
+  document.getElementById('ll-heart').disabled = true;
+  showToast(`💝 Heart says: "${questions[currentQ].hint}"`, 5000);
+}
+
+function endQuiz(won) {
+  document.getElementById('quiz-area').style.display = 'none';
+  const result = document.getElementById('quiz-result');
+  result.classList.add('show');
+  const finalAmount = won ? currentWinnings : lockedWinnings;
+  if (won) {
+    document.getElementById('result-emoji').textContent = '🏆';
+    document.getElementById('result-title').textContent = 'MILLIONAIRE! 🎉';
+    document.getElementById('result-msg').textContent = 'Anuoluwapo, you got ALL 10 questions right! You know your man inside out. Folusho owes you every single naira. 💕';
+    document.getElementById('result-winnings').textContent = 'You won ₦5,000! 💰';
+  } else if (finalAmount > 0) {
+    document.getElementById('result-emoji').textContent = '💛';
+    document.getElementById('result-title').textContent = 'Not Bad At All!';
+    document.getElementById('result-msg').textContent = `You got ${answeredCorrectly} questions right and hit a checkpoint! Walking away with something real. But we know you know him better 😄`;
+    document.getElementById('result-winnings').textContent = `You secured ₦${finalAmount.toLocaleString()}! 💰`;
+  } else {
+    document.getElementById('result-emoji').textContent = '😭';
+    document.getElementById('result-title').textContent = 'Anu... Really? 😂';
+    document.getElementById('result-msg').textContent = `You got ${answeredCorrectly} question${answeredCorrectly !== 1 ? 's' : ''} right. No checkpoint, no cash 😭 But Folusho loves you anyway! The wheel might save you...`;
+    document.getElementById('result-winnings').textContent = '₦0 from the quiz 😅';
+  }
+}
+
+// MEMORY MATCH
+const memEmojis = ['💋','🎬','🌙','🍽️','⛪','📸','🪮','👨‍🍳'];
+let flipped = [], matchedPairs = 0, moves = 0, canFlip = true;
+
+function showMemoryMatch() {
+  document.getElementById('wwtbam').style.display = 'none';
+  const mm = document.getElementById('memory-match');
+  mm.style.display = 'block';
+  setTimeout(() => mm.scrollIntoView({ behavior:'smooth' }), 100);
+  initMemoryMatch();
+}
+
+function initMemoryMatch() {
+  const all = [...memEmojis, ...memEmojis].sort(() => Math.random() - 0.5);
+  const grid = document.getElementById('match-grid');
+  grid.innerHTML = '';
+  flipped = []; matchedPairs = 0; moves = 0; canFlip = true;
+  document.getElementById('move-count').textContent = 0;
+  document.getElementById('pair-count').textContent = 0;
+  all.forEach((emoji) => {
+    const card = document.createElement('div');
+    card.className = 'match-card';
+    card.dataset.emoji = emoji;
+    card.innerHTML = `<div class="card-back">🤍</div><div class="card-front">${emoji}</div>`;
+    card.onclick = () => flipCard(card);
+    grid.appendChild(card);
+  });
+}
+
+function flipCard(card) {
+  if (!canFlip || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+  card.classList.add('flipped');
+  flipped.push(card);
+  if (flipped.length === 2) {
+    canFlip = false;
+    moves++;
+    document.getElementById('move-count').textContent = moves;
+    setTimeout(checkMatch, 900);
+  }
+}
+
+function checkMatch() {
+  const [a, b] = flipped;
+  if (a.dataset.emoji === b.dataset.emoji) {
+    a.classList.add('matched'); b.classList.add('matched');
+    matchedPairs++;
+    document.getElementById('pair-count').textContent = matchedPairs;
+    showToast(`✅ ${a.dataset.emoji} Match! You remember! 💕`);
+    if (matchedPairs === 8) setTimeout(() => document.getElementById('match-complete').classList.add('show'), 600);
+  } else {
+    a.classList.remove('flipped'); b.classList.remove('flipped');
+  }
+  flipped = []; canFlip = true;
+}
+
+// LUCKY WHEEL
+const wheelPrizes = [
+  { label:'📱 Phone Pouch', emoji:'📱', msg:"A cute phone pouch just for you! Style meets function. Very you. 💅" },
+  { label:'🎂 Cake', emoji:'🎂', msg:"Your favourite cake, ordered with love. Because you deserve sweetness every day. 🎂" },
+  { label:'💰 ₦5,000 Cash', emoji:'💰', msg:"Cold hard cash, straight to your hand. Spend it however you want! 💸" },
+  { label:'🍦 Ice Cream', emoji:'🍦', msg:"A full ice cream date — Strawberry flavour. Our flavour. 🍓" },
+  { label:'💡 Ring Light', emoji:'💡', msg:"YOUR GRAND PRIZE! ✨ A brand new Ring Light for your health content! Anuoluwapo the content queen is about to LEVEL UP. Folusho is so proud of you. 🌟👑" },
+  { label:'👜 Bag', emoji:'👜', msg:"A beautiful bag picked out just for you. Always carry yourself in style. 👜✨" },
+  { label:'🔋 Power Bank', emoji:'🔋', msg:"Never run out of power again! The world needs you connected. 🔋💕" },
+  { label:'🎬 Movie Night', emoji:'🎬', msg:"A full movie night of YOUR choice — snacks included, zero complaints from Folusho. 🍿" }
+];
+
+const RIGGED_INDEX = 4; // Ring Light always wins
+let wheelAngle = 0;
+
+function showWheel() {
+  document.getElementById('memory-match').style.display = 'none';
+  const ws = document.getElementById('wheel-section');
+  ws.style.display = 'block';
+  setTimeout(() => { ws.scrollIntoView({ behavior:'smooth' }); drawWheel(wheelAngle); }, 200);
+}
+
+function drawWheel(angle) {
+  const canvas = document.getElementById('wheelCanvas');
+  const ctx = canvas.getContext('2d');
+  const cx = canvas.width / 2, cy = canvas.height / 2, r = cx - 8;
+  const n = wheelPrizes.length, arc = (2 * Math.PI) / n;
+  const bgColors = ['#2d1515','#3b2020','#2a1010','#351a1a','#3d2a00','#2d1515','#3b2020','#2a1010'];
+  const edgeColors = ['#c9a96e','#c97b6a','#c9a96e','#c97b6a','#FFD700','#c9a96e','#c97b6a','#c9a96e'];
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let i = 0; i < n; i++) {
+    const s = angle + i * arc, e = s + arc;
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, s, e); ctx.closePath();
+    ctx.fillStyle = bgColors[i]; ctx.fill();
+    ctx.strokeStyle = edgeColors[i]; ctx.lineWidth = 2; ctx.stroke();
+    ctx.save(); ctx.translate(cx, cy); ctx.rotate(s + arc / 2);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = i === RIGGED_INDEX ? '#FFD700' : '#f2e0d0';
+    ctx.font = 'bold 10px sans-serif';
+    ctx.fillText(wheelPrizes[i].label, r - 6, 4);
+    ctx.restore();
+  }
+  ctx.beginPath(); ctx.arc(cx, cy, 26, 0, 2 * Math.PI);
+  ctx.fillStyle = '#1a0808'; ctx.fill();
+  ctx.strokeStyle = '#c9a96e'; ctx.lineWidth = 3; ctx.stroke();
+  ctx.fillStyle = '#c9a96e'; ctx.font = '16px sans-serif';
+  ctx.textAlign = 'center'; ctx.fillText('💝', cx, cy + 6);
+}
+
+function spinWheel() {
+  document.getElementById('spinBtn').disabled = true;
+  const n = wheelPrizes.length;
+  const arc = (2 * Math.PI) / n;
+  const spins = 8 + Math.floor(Math.random() * 5);
+  const targetSegAngle = -Math.PI / 2 - (RIGGED_INDEX + 0.5) * arc;
+  const finalAngle = targetSegAngle + spins * 2 * Math.PI;
+  const duration = 7000;
+  const startTime = performance.now();
+  const startAngle = wheelAngle;
+  function easeOut(t) { return 1 - Math.pow(1 - t, 5); }
+  function animate(now) {
+    const progress = Math.min((now - startTime) / duration, 1);
+    wheelAngle = startAngle + (finalAngle - startAngle) * easeOut(progress);
+    drawWheel(wheelAngle);
+    if (progress < 1) { requestAnimationFrame(animate); }
+    else { wheelAngle = finalAngle; drawWheel(wheelAngle); setTimeout(revealPrize, 800); }
+  }
+  requestAnimationFrame(animate);
+}
+
+function revealPrize() {
+  const p = wheelPrizes[RIGGED_INDEX];
+  document.getElementById('w-prize-emoji').textContent = p.emoji;
+  document.getElementById('w-prize-name').textContent = p.label;
+  document.getElementById('w-prize-msg').textContent = p.msg;
+  document.getElementById('wheel-result').classList.add('show');
+  showToast('🎉 CONGRATULATIONS ANU!! 🎉', 6000);
+}
+</script>
+</body>
+</html>
